@@ -1,11 +1,13 @@
+    <!-- Container -->
     <div class="container" id="formDiv">
+    <!-- Title -->
     <div id="titleOfForm">
     <svg viewBox="0 0 600 300">
-      <!-- Symbol-->
+      <!-- Symbol -->
       <symbol id="s-text">
         <text text-anchor="middle" x="50%" y="50%" dy=".35em">BOOTSTRAP FORM</text>
       </symbol>
-      <!-- Duplicate symbols-->
+      <!-- Duplicate symbols -->
       <use xlink:href="#s-text" class="display-6"></use>
       <use xlink:href="#s-text" class="display-6"></use>
       <use xlink:href="#s-text" class="display-6"></use>
@@ -13,13 +15,14 @@
       <use xlink:href="#s-text" class="display-6"></use>
     </svg>
     </div>
+    <!-- Warning Message -->
     <div id="msgToUsr"></div>
+    <!-- Form -->
         <form id="myForm">
             <div class="breadcrumb"><span class="btn btn-success">1</span><span class="display-5"> Data Pribadi</span></div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-1">Nama Lengkap:</label>
-                <input class="form-control" type="text" name="name" onchange="clearIt(this)" placeholder="Nama Lengkap tanpa gelar" id="field-1"
-                />
+                <input class="form-control" type="text" name="name" onchange="clearIt(this)" placeholder="Nama Lengkap tanpa gelar" id="field-1" />
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-2"> Tanggal Lahir:</label>
@@ -27,8 +30,7 @@
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-3"> Tempat Lahir:</label>
-                <input class="form-control" type="text" name="birthplace" onchange="clearIt(this)" placeholder="Kota Yogyakarta" id="field-3"
-                />
+                <input class="form-control" type="text" name="birthplace" onchange="clearIt(this)" placeholder="Kota Yogyakarta" id="field-3" />
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-4"> Jenis Kelamin:</label>
@@ -36,7 +38,7 @@
                                                 <option>Lainnya</option>
                                                 <option>Laki-laki</option>
                                                 <option>Perempuan</option>
-                                    </select>
+                </select>
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-5"> Status:</label>
@@ -44,7 +46,7 @@
                                                 <option>Lainnya</option>
                                                 <option>Married</option>
                                                 <option>Single</option>
-                                    </select>
+                </select>
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-6"> Agama dan Kepercayaan:</label>
@@ -56,7 +58,7 @@
                                                 <option>Hindu</option>
                                                 <option>Buddha</option>
                                                 <option>Kong Hu Cu</option>
-                                    </select>
+                </select>
             </div>
             <div class="breadcrumb"><span class="btn btn-warning">2</span><span class="display-5"> Alamat Lengkap</span></div>
             <div class="form-group col-auto">
@@ -74,8 +76,8 @@
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-10"> Jurusan:</label>
-                <input class="form-control" type="text" name="educational" onchange="clearIt(this)" placeholder="Contoh: Ilmu Akuntasi, Pendidikan Bahasa Inggris, Ilmu Administrasi Negara"
-                    id="field-10" />
+                <input class="form-control" type="text" name="educational" onchange="clearIt(this)" 
+                    placeholder="Contoh: Pendidikan Bahasa Inggris, Ilmu Administrasi Negara" id="field-10" />
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-11"> Fakultas:</label>
@@ -98,7 +100,7 @@
                                                         <option>PLS</option>
                                                         <option>Wisuda</option>
                                                     </optgroup>
-                                    </select>
+                 </select>
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-12"> Indeks Prestasi Kumulatif:</label>
@@ -109,7 +111,7 @@
                                                     <option>dibawah 3.50</option>
                                                     <option>dibawah 3.75</option>
                                                     <option>dibawah s4.00</option>
-                                    </select>
+                </select>
             </div>
             <div class="form-group col-auto">
                 <label class="form-control-label" for="field-13"> Tahun Ajaran (Angkatan):</label>
@@ -121,7 +123,7 @@
                                                     <option>2014</option>
                                                     <option>2015</option>
                                                     <option>2016</option>
-                                    </select>
+                </select>
             </div>
             <div class="breadcrumb"><span class="btn btn-info">4</span><span class="display-5"> Kontak</span></div>
             <div class="form-group col-auto"><label class="form-control-label" for="field-14">Email:</label><input class="form-control" type="email" name="email"
@@ -130,6 +132,7 @@
                     name="phone" onchange="clearIt(this)" placeholder="+628910111213" id="field-15" /></div>
             <div class="form-group col-auto"><label class="form-control-label" for="field-16"> Twitter atau Facebook:</label><input class="form-control" type="text"
                     name="sosmed" onchange="clearIt(this)" placeholder="username" id="field-16" /></div>
+            <!-- File Upload -->
             <div class="breadcrumb"><span class="btn btn-primary">5</span><span class="display-5"> Lampiran</span></div>
             <div class="form-group col-auto"><label class="form-control-label" for="field-17">CV (pdf/doc/jpeg only):</label><input class="form-control" type="file"
                     name="myFile1" onchange="clearIt(this)" id="field-17" /></div>
@@ -142,8 +145,10 @@
             <input class="btn btn-secondary btn-lg btn-block" type="button" value="Apply" onmouseup="submitForm(this.parentNode)" />
         </form>
     </div>
+    <!-- Spinner -->
     <div id="inProgress" style="display: none;">
         Sedang mengunggah. Tunggu sebentar!
     </div>
+    <!-- Feedback -->
     <div id="output">
     </div>

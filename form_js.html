@@ -1,17 +1,15 @@
 <script>
     window.clearIt = function (thisEl) {
     document.getElementById('msgToUsr').style.display = 'none';
-    thisEl.style.backgroundColor = "";
+    thisEl.style.backgroundColor = "white";
 };
 
 window.submitForm = function (myForm) {
-    var key, value, requiredList = [],
-        nameName, thisEl, errElmt, inputType, die;
+    var key, value, requiredList = [], nameName, thisEl, errElmt, inputType, die;
+    
     die = false;
 
-    requiredList = ['address', 'name', 'birthdate', 'birthplace', 'gender', 'marital', 'belief', 'qualification',
-        'educational', 'subject', 'profiency', 'email', 'phone', 'sosmed', 'myFile1'
-    ];
+    requiredList = ['address', 'name', 'birthdate', 'birthplace', 'gender', 'marital', 'belief', 'qualification', 'educational', 'subject', 'profiency', 'email', 'phone', 'sosmed', 'myFile1'];
 
     for (key in myForm) {
 
@@ -30,9 +28,9 @@ window.submitForm = function (myForm) {
             if (requiredList.indexOf(nameName) === -1) {
                 continue;
             };
+            
             die = true;            
             toggle_visibility('formDiv');
-
             thisEl.style.backgroundColor = "red";
             thisEl.focus();
             window.scrollTo(0, 0);
