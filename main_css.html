@@ -1,137 +1,123 @@
 <style type="text/css">
 #msgToUsr {
-    position: absolute;
-    left: 20%;
-    width: 50%;
-    background-color: white;
-    border: 1px solid red;
-    text-align: center;
-    display: none;
+     position: absolute;
+     left: 20%;
+     width: 50%;
+     background-color: white;
+     border: 1px solid red;
+     text-align: center;
+     display: none;
 }
-#titleOfForm {
-    display: table;
-    margin: 2% auto 2% auto;
-    width: 600px;
-    height: 300px;
-    border: solid 1px lightgray;
-    background-color: #e9ecef!important;
-    border-radius: 5px;
+ #titleOfForm {
+     display: table;
+     margin: 2% auto 2% auto;
+     width: 600px;
+     height: 300px;
+     border: solid 1px lightgray;
+     background-color: #e9ecef!important;
+     border-radius: 5px;
 }
-#formDiv {
-    padding: 20px 0 20px 0;
+ #formDiv {
+     padding: 20px 0 20px 0;
 }
-.display-5 {
-    width: 100%;
-    font-size: 30px;
-    margin: 125px auto;
-    text-align: center;
-    color: #fff;
-    text-shadow: 0px 1px 1px #ddd, 0px 2px 1px #d6d6d6, 0px 3px 1px #ccc, 0px 4px 1px #c5c5c5, 0px 5px 1px #c1c1c1, 0px 6px 1px #bbb, 0px 7px 1px #777, 0px 8px 3px rgba(100, 100, 100, 0.4), 0px 9px 5px rgba(100, 100, 100, 0.1), 0px 10px 7px rgba(100, 100, 100, 0.15), 0px 11px 9px rgba(100, 100, 100, 0.2), 0px 12px 11px rgba(100, 100, 100, 0.25), 0px 13px 15px rgba(100, 100, 100, 0.3);
-    transition: all .8s ease-in-out;
-    -o-transition: all .8s ease-in-out;
-    -moz-transition: all .8s ease-in-out;
-    -webkit-transition: all .8s ease-in-out;
+ .display-5 {
+     width: 100%;
+     font-size: 30px;
+     margin: 125px auto;
+     text-align: center;
+     color: #fff;
+     text-shadow: 0px 1px 1px #ddd, 0px 2px 1px #d6d6d6, 0px 3px 1px #ccc, 0px 4px 1px #c5c5c5, 0px 5px 1px #c1c1c1, 0px 6px 1px #bbb, 0px 7px 1px #777, 0px 8px 3px rgba(100, 100, 100, 0.4), 0px 9px 5px rgba(100, 100, 100, 0.1), 0px 10px 7px rgba(100, 100, 100, 0.15), 0px 11px 9px rgba(100, 100, 100, 0.2), 0px 12px 11px rgba(100, 100, 100, 0.25), 0px 13px 15px rgba(100, 100, 100, 0.3);
+     transition: all .8s ease-in-out;
+     -o-transition: all .8s ease-in-out;
+     -moz-transition: all .8s ease-in-out;
+     -webkit-transition: all .8s ease-in-out;
 }
-.display-6 {
-    font-size: 70px;
-    fill: none;
-    stroke-width: 3;
-    stroke-linejoin: round;
-    stroke-dasharray: 70 330;
-    stroke-dashoffset: 0;
-    -webkit-animation: stroke 6s infinite linear;
-    animation: stroke 6s infinite linear;
+ .display-6 {
+     font-size: 70px;
+     fill: none;
+     stroke-width: 3;
+     stroke-linejoin: round;
+     stroke-dasharray: 70 330;
+     stroke-dashoffset: 0;
+     -webkit-animation: stroke 6s infinite linear;
+     animation: stroke 6s infinite linear;
 }
-.display-6:nth-child(5n + 1) {
-    stroke: #f2385a;
-    -webkit-animation-delay: -1.2s;
-    animation-delay: -1.2s;
+ .display-6:nth-child(5n + 1) {
+     stroke: #f2385a;
+     -webkit-animation-delay: -1.2s;
+     animation-delay: -1.2s;
 }
-.display-6:nth-child(5n + 2) {
-    stroke: #f5a503;
-    -webkit-animation-delay: -2.4s;
-    animation-delay: -2.4s;
+ .display-6:nth-child(5n + 2) {
+     stroke: #f5a503;
+     -webkit-animation-delay: -2.4s;
+     animation-delay: -2.4s;
 }
-.display-6:nth-child(5n + 3) {
-    stroke: #e9f1df;
-    -webkit-animation-delay: -3.6s;
-    animation-delay: -3.6s;
+ .display-6:nth-child(5n + 3) {
+     stroke: #e9f1df;
+     -webkit-animation-delay: -3.6s;
+     animation-delay: -3.6s;
 }
-.display-6:nth-child(5n + 4) {
-    stroke: #56d9cd;
-    -webkit-animation-delay: -4.8s;
-    animation-delay: -4.8s;
+ .display-6:nth-child(5n + 4) {
+     stroke: #56d9cd;
+     -webkit-animation-delay: -4.8s;
+     animation-delay: -4.8s;
 }
-.display-6:nth-child(5n + 5) {
-    stroke: #3aa1bf;
-    -webkit-animation-delay: -6s;
-    animation-delay: -6s;
+ .display-6:nth-child(5n + 5) {
+     stroke: #3aa1bf;
+     -webkit-animation-delay: -6s;
+     animation-delay: -6s;
 }
-.list-type5{
-width:410px;
-margin:0 auto;
+ .list-type5{
+     width:410px;
+     margin:0 auto;
 }
-.list-type5 ol {
-list-style-type: none;
-list-style-type: decimal !ie; /*IE 7- hack*/
-margin: 0;
-margin-left: 1em;
-padding: 0;
-counter-reset: li-counter;
+ .list-type5 ol {
+     list-style-type: none;
+     list-style-type: decimal !ie;
+    /*IE 7- hack*/
+     margin: 0;
+     margin-left: 1em;
+     padding: 0;
+     counter-reset: li-counter;
 }
-.list-type5 ol li{
-position: relative;
-margin-bottom: 1.5em;
-padding: 0.5em;
-background-color: #F0D756;
-padding-left: 58px;
+ .list-type5 ol li{
+     position: relative;
+     margin-bottom: 1.5em;
+     padding: 0.5em;
+     background-color: #F0D756;
+     padding-left: 58px;
 }
-
-.list-type5 a{
-text-decoration:none;
-color:black;
-font-size:15px;
-font-family: 'Raleway', sans-serif;
+ .list-type5 a{
+     text-decoration:none;
+     color:black;
+     font-size:15px;
+     font-family: 'Raleway', sans-serif;
 }
-
-.list-type5 li:hover{
-box-shadow:inset -1em 0 #6CD6CC;
--webkit-transition: box-shadow 0.5s; /* For Safari 3.1 to 6.0 */
-transition: box-shadow 0.5s;
+ .list-type5 li:hover{
+     box-shadow:inset -1em 0 #6CD6CC;
+     -webkit-transition: box-shadow 0.5s;
+    /* For Safari 3.1 to 6.0 */
+     transition: box-shadow 0.5s;
 }
-
-.list-type5 ol li:before {
-position: absolute;
-top: -0.3em;
-left: -0.5em;
-width: 1.8em;
-height: 1.2em;
-font-size: 2em;
-line-height: 1.2;
-font-weight: bold;
-text-align: center;
-color: white;
-background-color: #6CD6CC;
-transform: rotate(-20deg);
--ms-transform: rotate(-20deg);
--webkit-transform: rotate(-20deg);
-z-index: 99;
-overflow: hidden;
-content: counter(li-counter);
-counter-increment: li-counter;
-}
-@-webkit-keyframes stroke {
-    100% {
-        stroke-dashoffset: -400;
-    }
-}
-@keyframes stroke {
-    100% {
-        stroke-dashoffset: -400;
-    }
-}
-svg {
-    position: relative;
+ .list-type5 ol li:before {
+     position: absolute;
+     top: -0.3em;
+     left: -0.5em;
+     width: 1.8em;
+     height: 1.2em;
+     font-size: 2em;
+     line-height: 1.2;
+     font-weight: bold;
+     text-align: center;
+     color: white;
+     background-color: #6CD6CC;
+     transform: rotate(-20deg);
+     -ms-transform: rotate(-20deg);
+     -webkit-transform: rotate(-20deg);
+     z-index: 99;
+     overflow: hidden;
+     content: counter(li-counter);
+     counter-increment: li-counter;
 }
 
 /*!

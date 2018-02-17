@@ -62,7 +62,7 @@ function updateOutput(dataReturned) {
     console.log('typeof dataReturned: ' + typeof dataReturned);
 
     if (typeof dataReturned === 'object') {
-        html = "<div>Data was not saved to spreadsheet</div><div>No Spreadsheet ID is set</div>" + dataReturned[2];
+        html = "Data was not saved to spreadsheet<br>No Spreadsheet ID is set" + dataReturned[2];
     } else {
         html = dataReturned;
     };
@@ -71,12 +71,4 @@ function updateOutput(dataReturned) {
     loadingPage_hideSpnr('idLoad');
 }
 
-function toggle_visibility(id) {
-    var e;
-    e = document.getElementById(id);
-    if (e.style.display !== 'none')
-        e.style.display = 'none';
-    else
-        e.style.display = 'block';
-}
 </script>
