@@ -71,4 +71,12 @@ function updateOutput(dataReturned) {
     loadingPage_hideSpnr('idLoad');
 }
 
+function toggle_visibility(id) {
+    var e;
+    e = document.getElementById(id);
+    if (e.style.display !== 'none')
+        e.style.display = 'none';
+    else
+        e.style.display = 'block';
+}
 </script>
