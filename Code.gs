@@ -1,6 +1,6 @@
 var SPREADSHEET_FILE_ID = "XXXXXX";
 var SHEET_NAME_TO_WRITE_DATA_TO = "XXXXXX";
-var folderId = "XXXXXX";
+var FOLDER_ID = "XXXXXX";
 var ADD_TIMESTAMP = true;
 var ADD_IMAGE_URLS_TO_SHEET = true;
 

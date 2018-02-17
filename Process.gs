@@ -17,8 +17,8 @@ function processForm(theForm) {
     Logger.log(fileBlob3)
     Logger.log(fileBlob4)
 
-    if (folderId) {
-        folder = DriveApp.getFolderById(folderId);
+    if (FOLDER_ID) {
+        folder = DriveApp.getFolderById(FOLDER_ID);
     } else {
         folder = DriveApp.getRootFolder();
     };
@@ -52,7 +52,7 @@ function processForm(theForm) {
 
     for (i = 0; i < L; i += 1) {
         thisKey = arrayOfNamesToWriteToSS[i];
-        allTheData = allTheData + theForm[thisKey] + " <br>";
+        allTheData = allTheData + "<li>" + theForm[thisKey] + "</li>" + " <br>";
         innerArray.push(theForm[thisKey]);
     };
 
