@@ -52,7 +52,7 @@ function processForm(theForm) {
 
     for (i = 0; i < L; i += 1) {
         thisKey = arrayOfNamesToWriteToSS[i];
-        allTheData = allTheData + "<li>" + theForm[thisKey] + "</li>" + " <br>";
+        allTheData = allTheData + theForm[thisKey] + " <br>";
         innerArray.push(theForm[thisKey]);
     };
 

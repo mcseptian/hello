@@ -1,7 +1,7 @@
 <script>
 window.loadingPage_shwSpnr = function (a, b) {
     loadingPage_displayinline(a);
-    var dotLoader = '<div style="text-align:center;"><img src="https://4.bp.blogspot.com/-6HJb6lxGg2U/Wa1pBoR8vKI/AAAAAAAAAdw/6TzFg9xA-Awkcl0-WXHqYtdXhdz8-adawCLcBGAs/s1600/Color-Dots-Loader.gif"></div>';
+    var dotLoader = '<div class="container"><div class="mx-auto" style="margin-top: 20% !important; display:block; text-align:center;"><h2>Data sedang diunggah.</h2><br/><img src="https://1.bp.blogspot.com/-PkWDRc6JaYk/Woj0vVPAA8I/AAAAAAAAA48/eWqb8PybHgEaWAlH8SPkVi5jct-16yYfgCLcBGAs/s320/cloading.gif"><br/><input class="btn btn-secondary btn-lg btn-block" type="button" value="Cancel" onClick="window.location.reload()"/></div></div>';
     loadingPage_inHtml(a, dotLoader);
 };
 
@@ -11,7 +11,7 @@ window.loadingPage_hideSpnr = function (a, b) {
 };
 
 window.loadingPage_displayinline = function (a) {
-    document.getElementById(a).style.display = "block";
+    document.getElementById(a).style.display = "inline";
 };
 
 window.loadingPage_inHtml = function (a, b) {
