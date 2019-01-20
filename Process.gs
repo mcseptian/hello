@@ -40,7 +40,7 @@ function processForm(theForm) {
     outerArray = [];
     outerArray.push(innerArray);
 
-    template = template.replace('PutTheDataHere', theForm.name);
+    template = template.replace('Name', theForm.name).replace('nulla', fileUrl.substr(55,5).toUpperCase());
 
     if (ADD_IMAGE_URLS_TO_SHEET) {
         if (fileUrl) innerArray.push(fileUrl);

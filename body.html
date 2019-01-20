@@ -1,6 +1,8 @@
-      <div class="container" id="formDiv">
+      <div class="container" id="formDiv">       
         <div id="titleOfForm"></div>
-        <div class="notification is-danger" role="alert" id="msgToUsr"></div>
+        <br/>
+        <div class="notification is-danger is center" role="alert" id="msgToUsr"></div>
+        <br/>
         <form id="myForm">
           <section class="hero is-primary is-bold">
             <div class="hero-body">
@@ -15,17 +17,17 @@
             </div>
           </section>
           <br/>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="1">Nama :</label><input class="input is-large is-size-2-mobile is-rounded is-danger" type="text" name="name" onchange="clearIt(this)"
+            <div class="field"><label class="label is-large" for="1">Nama :</label><input class="input is-large is-rounded is-danger" type="text" name="name" onchange="clearIt(this)"
                     placeholder="Nama Lengkap" id="1" />
             </div>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="2">Tanggal Lahir:</label><input class="input is-large is-size-2-mobile is-rounded" type="text" name="birth" onchange="clearIt(this)"
+            <div class="field"><label class="label is-large" for="2">Tanggal Lahir:</label><input class="input is-large is-rounded" type="text" name="birth" onchange="clearIt(this)"
                     placeholder="Rabu, 3 Oktober 2018" id="2" />
             </div>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="3">Alamat:</label><input class="input is-large is-size-2-mobile is-rounded is-danger" type="text" name="address" onchange="clearIt(this)"
+            <div class="field"><label class="label is-large" for="3">Alamat:</label><input class="input is-large is-rounded is-danger" type="text" name="address" onchange="clearIt(this)"
                     placeholder="Alamat Lengkap" id="3" />
             </div>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="4">Kontak:</label>
-                <input class="input is-large is-size-2-mobile is-rounded is-danger" type="tel" name="phone" onchange="clearIt(this)" placeholder="cth: +62562762912" id="4" />
+            <div class="field"><label class="label is-large" for="4">Kontak:</label>
+                <input class="input is-large is-rounded is-danger" type="tel" name="phone" onchange="clearIt(this)" placeholder="cth: +62562762912" id="4" />
             </div>
           <section class="hero is-primary is-info is-bold">
             <div class="hero-body">
@@ -40,8 +42,8 @@
             </div>
           </section>
           <br/>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="5">Program Pendidikan:</label>
-                <select class="input is-large is-size-2-mobile is-rounded" name="programme" onchange="clearIt(this)" id="5">
+            <div class="field"><label class="label is-large" for="5">Program Pendidikan:</label>
+                <select class="input is-large is-rounded" name="programme" onchange="clearIt(this)" id="5">
                     <option>Program Diploma</option>
                     <option>Program Sarjana</option>
                     <option>Program Profesi</option>
@@ -49,11 +51,11 @@
                     <option>Program Doktor</option>
                 </select>
             </div>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="6">Program Studi:</label>
-                <input class="input is-large is-size-2-mobile is-rounded is-danger" type="text" name="study" onchange="clearIt(this)" placeholder="cth: Ilmu Sejarah/Pendidikan Matematika" id="6" />
+            <div class="field"><label class="label is-large" for="6">Program Studi:</label>
+                <input class="input is-large is-rounded is-danger" type="text" name="study" onchange="clearIt(this)" placeholder="cth: Ilmu Sejarah/Pendidikan Matematika" id="6" />
             </div>
-            <div class="field"><label class="label is-large is-size-2-mobile" for="7">Fakultas :</label>
-                <select class="input is-large is-size-2-mobile is-rounded" name="faculty" id="7">
+            <div class="field"><label class="label is-large" for="7">Fakultas :</label>
+                <select class="input is-large is-rounded" name="faculty" id="7">
                     <option>Fakultas Ilmu Pendidikan (FIP)</option>
                     <option>Fakultas Matematika dan Ilmu Pengetahuan Alam (FMIPA)</option>
                     <option>Fakultas Bahasa dan Seni (FBS)</option>
@@ -66,8 +68,8 @@
                 </select>
             </div>            
             <div class="field">
-                <label class="label is-large is-size-2-mobile" for="8">Tahun Angkatan:</label>
-                <select class="input is-large is-size-2-mobile is-rounded" name="year" id="8">            
+                <label class="label is-large" for="8">Tahun Angkatan:</label>
+                <select class="input is-large is-rounded" name="year" id="8">            
                     <option>2015</option>
                     <option>2016</option>
                     <option>2017</option>
@@ -75,8 +77,8 @@
                 </select>
             </div>
             <div class="field">
-                <label class="label is-large is-size-2-mobile" for="9">Indeks Prestasi Kumulatif (IPK):</label>
-                <select class="input is-large is-size-2-mobile is-rounded" name="gpa" id="9">    
+                <label class="label is-large" for="9">Indeks Prestasi Kumulatif (IPK):</label>
+                <select class="input is-large is-rounded" name="gpa" id="9">    
                     <option>3.51 - 4.00</option>            
                     <option>3.01 - 3.50</option>
                     <option>2.50 - 3.00</option>
@@ -95,29 +97,18 @@
             </div>
           </section>
           <br/>
-            <div class="file has-name is-fullwidth is-large is-size-2-mobile is-danger is-right">
-              <label class="file-label">
-                <input class="file-input" type="file" name="myFile1" onchange="clearIt(this)" id="10" />
-                <span class="file-cta">
-                  <span class="file-label">
-                    Choose a file…
-                  </span>
-                </span>
-                <span class="file-name">
-                  File_CV.pdf
-                </span>
-              </label>
-            </div>
+          <div class="file has-name is-light is-fullwidth is-large">
+            <label class="file-cta">
+              <input class="file-label" type="file" name="myFile1" onchange="clearIt(this)" placeholder="Choose a file…">
+            </label>
+           </div>
             <br/>
-            <div class="field"><div class="control">
-            <input type="button" class="button is-dark is-fullwidth is-large is-size-2-mobile" value="Kirim" onmouseup="submitForm(this.parentNode)"/>
-            </div></div>
+            <input type="button" class="button is-dark is-fullwidth is-large" value="Kirim" onmouseup="submitForm(this.parentNode)"/>
         </form>
         <footer class="footer">
           <div class="content has-text-centered">
             <p>
-              <strong>Limuny Application Form</strong> by Limuny NetCafe. The source code is licensed
-              <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+              <strong>Limuny Application Form</strong> by Limuny NetCafe. The source code is licensed under the MIT license.
             </p>
           </div>
         </footer>
