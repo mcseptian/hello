@@ -35,6 +35,8 @@ Secara default namanya *Sheet1*
 6. Form sudah dapat diakses menggunakan *Current web app URL:* dengan format: 
 `https://script.google.com/macros/s/XXXX/exec`
 
+7. Kode `XXXX` yang dipakai dalam script ini dihasilkan oleh API yang otomatis berubah setiap inisialisasi, ubah sebelum menggunakan.
+
 ## CREDIT
 
 I forgot how and where I got this code. It's an alternative way of using GAS (Google Apps Script). Used for POB (Penerimaan Operator Baru) that need some form with Upload Function. At those time Google Forms can't do the job (it require login for the uploader to use the function).
