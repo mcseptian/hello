@@ -2,7 +2,7 @@
 
 ## USAGE
 
-Dibutuhkan (Google Apps Script)[https://script.google.com/home] untuk menggunakan script ini.
+Dibutuhkan [https://script.google.com/home](Google Apps Script) untuk menggunakan script ini.
 
 1. Buatlah file dengan nama sesuai kode sumber:
 
