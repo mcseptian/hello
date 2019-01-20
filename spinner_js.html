@@ -1,0 +1,25 @@
+<script>
+window.spinner_shwSpnr = function(a,b) {
+//console.log('a: ' + a)
+  spinner_displayinline(a);
+  var spinner = '<div class="container button is-fullwidth is-large is-primary is-loading">Loading</div>';
+  spinner_inHtml(a,spinner);
+};
+
+window.spinner_hideSpnr = function(a,b) {
+  spinner_inHtml(a,"");
+  spinner_hide(a);
+};
+
+window.spinner_displayinline = function(a) {
+  document.getElementById(a).style.display = "inline";
+};
+
+window.spinner_inHtml = function(a,b) {
+  document.getElementById(a).innerHTML = b;
+};
+
+window.spinner_hide = function(a) {
+  document.getElementById(a).style.display = "none";
+};
+</script>
