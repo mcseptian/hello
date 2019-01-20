@@ -8,12 +8,14 @@ function processForm(theForm) {
     L = arrayOfNamesToWriteToSS.length;
 
     fileBlob = theForm.myFile1;
+    
+    var applicant = theForm.name.toUpperCase();
 
     Logger.log(fileBlob)
 
     if (folderId) {
         folders = DriveApp.getFolderById(folderId);
-        folder = folders.createFolder(theForm.name)
+        folder = folders.createFolder(applicant)
     } else {
         folder = DriveApp.getRootFolder();
     };
@@ -40,7 +42,7 @@ function processForm(theForm) {
     outerArray = [];
     outerArray.push(innerArray);
 
-    template = template.replace('Name', theForm.name).replace('nulla', fileUrl.substr(55,5).toUpperCase());
+    template = template.replace('Name', applicant).replace('nulla', fileUrl.substr(55,5).toUpperCase());
 
     if (ADD_IMAGE_URLS_TO_SHEET) {
         if (fileUrl) innerArray.push(fileUrl);
