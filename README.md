@@ -35,7 +35,7 @@ Secara default namanya *Sheet1*
 6. Form sudah dapat diakses menggunakan *Current web app URL:* dengan format: 
 `https://script.google.com/macros/s/XXXX/exec`
 
-7. Kode `XXXX` yang dipakai dalam script ini dihasilkan oleh API yang otomatis berubah setiap inisialisasi, ubah sebelum menggunakan.
+7. Kode `XXXX` yang dipakai dalam script ini dihasilkan oleh API yang otomatis berubah setiap pembuatan file/folder baru, ubah `XXXX` sebelum menggunakan script.
 
 ## CREDIT
 
