@@ -4,35 +4,35 @@
 
 Dibutuhkan (Google Apps Script)[https://script.google.com/home] untuk menggunakan script ini.
 
-Buatlah file dengan nama sesuai kode sumber:
+1. Buatlah file dengan nama sesuai kode sumber:
 
-1. File Script 
-  - Code.gs
-  - Process.gs
-2. File Html (page)
-  - index.html
-  - body.html
-  - feedback.html
-3. File Html (style)
-  - main_css.html
-  - form_css.html
-  - print_css.html
-3. File Html (javascript)
-  - form_js.html
-  - spinner_js.html
+    - File Script 
+      - Code.gs
+      - Process.gs
+    - File Html (page)
+      - index.html
+      - body.html
+      - feedback.html
+    - File Html (style)
+      - main_css.html
+      - form_css.html
+      - print_css.html
+    - File Html (javascript)
+      - form_js.html
+      - spinner_js.html
   
-Ubah nilai variabel SPREADSHEET_FILE_ID pada file Code.gs dengan kode yang terdapat pada alamat url file spreadsheets:
+2. Ubah nilai variabel SPREADSHEET_FILE_ID pada file Code.gs dengan kode yang terdapat pada alamat url file spreadsheets:
 `https://docs.google.com/spreadsheets/d/XXXX/edit`
 
-Ubah nilai variabel SHEET_NAME_TO_WRITE_DATA_TO pada file Code.gs dengan nama Sheet di file spreadsheets:
+3. Ubah nilai variabel SHEET_NAME_TO_WRITE_DATA_TO pada file Code.gs dengan nama Sheet di file spreadsheets:
 Secara default namanya *Sheet1*
 
-Ubah nilai variabel FOLDER_ID pada file Code.gs dengan  dengan kode yang terdapat pada alamat url folder:
+4. Ubah nilai variabel FOLDER_ID pada file Code.gs dengan  dengan kode yang terdapat pada alamat url folder:
 `https://drive.google.com/drive/folders/XXXX`
 
-Publish dengan pilihan *Deploy as web app* dan ubah nilai *Who has access to the app:* menjadi *Anyone, even anonymous*
+5. Publish dengan pilihan *Deploy as web app* dan ubah nilai *Who has access to the app:* menjadi *Anyone, even anonymous*
 
-Form sudah dapat diakses menggunakan *Current web app URL:* dengan format: 
+6. Form sudah dapat diakses menggunakan *Current web app URL:* dengan format: 
 `https://script.google.com/macros/s/XXXX/exec`
 
 ## CREDIT
