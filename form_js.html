@@ -54,7 +54,7 @@
         errElmt.addEventListener("click", function(){
            this.style.display = "none";});
       };
-    };
+    };    
     
     /* 
     console.log('right before google.script.run');
@@ -72,17 +72,15 @@
   };
 
   function updateOutput(dataReturned) {
-    var html,outputDiv;
-    
-    /*
+    var html,outputDiv;    
+    /* 
       console.log('dataReturned: ' + dataReturned);
       console.log('typeof dataReturned: ' + typeof dataReturned);
     */
-    
     if (typeof dataReturned === 'object') {
       html = '<div class="notification is-danger" style="text-align: center;" role="alert"><h2>Data belum diunggah. File Spreadsheet belum siap. Coba lagi nanti! Terima kasih.</h2></div><br>';
     } else {
-      html = '<div class="notification is-success" style="text-align: center;" role="alert"><h2>Data Anda telah berhasil diunggah. Silakan cek twitter kami @limunynetcafe untuk tahap selanjutnya. Terima kasih.</h2></div><br>';
+      html = '<div class="notification is-success" style="text-align: center;" role="alert"><h2>Data Anda telah berhasil diunggah. Silakan cek twitter kami untuk tahap selanjutnya. Terima kasih.</h2></div><br>';
     };
     toggle_visibility('inProgress');
     outputDiv = document.getElementById('output');

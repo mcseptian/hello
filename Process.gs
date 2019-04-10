@@ -42,14 +42,15 @@ function processForm(theForm) {
     outerArray = [];
     outerArray.push(innerArray);
 
-    template = template.replace('Name', applicant).replace('nulla', fileUrl.substr(55,5).toUpperCase());
+    template = template.replace('Name', applicant).replace('nulla', fileUrl.substr(55,4).toUpperCase());
 
-    if (ADD_IMAGE_URLS_TO_SHEET) {
+    if (FILE_URLS_TO_SHEET) {
         if (fileUrl) innerArray.push(fileUrl);
     };
 
     if (!SPREADSHEET_FILE_ID) {
-        return ['err', 'No Spreadsheet ID', template] };
+        return ["Error: Spreadsheet ID not set", template]
+    };
 
     sheet = SpreadsheetApp.openById(SPREADSHEET_FILE_ID).getSheetByName(SHEET_NAME_TO_WRITE_DATA_TO);
     sheet.appendRow(innerArray);
