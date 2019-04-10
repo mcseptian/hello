@@ -1,838 +1,436 @@
-/**
- * CMS.js v2.0.0
- * Copyright 2018 Chris Diana
- * https://chrisdiana.github.io/cms.js
+/*
+ * CMS.js v1.0.0
+ * Copyright 2015 Chris Diana
+ * www.cdmedia.github.io/cms.js
  * Free to use under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
  */
-var CMS = function(config) {
-  'use strict';
 
-  var container;
-  var messageContainer;
+var CMS = {
 
-  this.ready = false;
-  this.routes = {};
-  this.collections = {};
-  this.filteredCollections = {};
+	settings: {
+		siteName: 'CMS.js',
+		siteTagline: 'Your site tagline',
+		siteEmail: 'your_email@example.com',
+		siteAuthor: 'Your Name',
+		siteUrl: '',
+		siteNavItems: [
+			{ name: 'Github', href: '#', newWindow: false},
+			{ name: 'About' }
+		],
+		pagination: 3,
+		postsFolder: 'posts',
+		postSnippetLength: 120,
+		pagesFolder: 'pages',
+		fadeSpeed: 300,
+		mainContainer: $('.cms_main'),
+		footerContainer: $('.cms_footer'),
+		footerText: '&copy; ' + new Date().getFullYear() + ' All Rights Reserved.',
+		parseSeperator: '---',
+		loader: '<div class="loader">Loading...</div>',
+		get siteAttributes() {
+			return [
+				{ attr: 'title', value: CMS.settings.siteName },
+				{ attr: '.cms_sitename', value: CMS.settings.siteName},
+				{ attr: '.cms_tagline', value: CMS.settings.siteTagline},
+				{ attr: '.cms_footer_text', value: CMS.settings.footerText}
+			];
+		},
+		mode: 'Github',
+		githubUserSettings: {
+			username: 'yourusername',
+			repo: 'yourrepo',
+		},
+		githubSettings: {
+			branch: 'gh-pages',
+			host: 'https://api.github.com'
+		}
+	},
 
-  // Config defaults
-  var defaults = {
-    elementId: null,
-    layoutDirectory: null,
-    defaultView: null,
-    errorLayout: null,
-    mode: 'SERVER',
-    github: null,
-    types: [],
-    plugins: [],
-    frontMatterSeperator: '---',
-    listAttributes: ['tags'],
-    dateParser: /\d{4}-\d{2}(?:-\d{2})?/,
-    extension: '.md',
-    sort: undefined,
-    markdownEngine: null,
-    debug: false,
-    messageClassName: 'cms-messages',
-    onload: function() {},
-    onroute: function() {},
-  };
+	posts: [],
+	pages: [],
+	loaded: {},
 
-  // Messages
-  var msg = {
-    NO_FILES_ERROR: 'ERROR: No files in directory',
-    ELEMENT_ID_ERROR: 'ERROR: No element ID or ID incorrect. Check "elementId" parameter in config.',
-    DIRECTORY_ERROR: 'ERROR: Error getting files. Make sure there is a directory for each type in config with files in it.',
-    GET_FILE_ERROR: 'ERROR: Error getting the file',
-    LAYOUT_LOAD_ERROR: 'ERROR: Error loading layout. Check the layout file to make sure it exists.',
-    NOT_READY_WARNING: 'WARNING: Not ready to perform action',
-  };
+	extend: function (target, opts, callback) {
+		var next;
+		if (typeof opts === "undefined") {
+			opts = target;
+			target = CMS;
+		}
+		for (next in opts) {
+			if (Object.prototype.hasOwnProperty.call(opts, next)) {
+				target[next] = opts[next];
+			}
+		}
+		callback(); // check user config options
+		return target;
+	},
 
-  /**
-   * Templating function that renders HTML templates.
-   * @function
-   * @param {string} text - HTML text to be evaluated.
-   * @returns {string} Rendered template with injected data.
-   */
-  function Templater(text) {
-    return new Function(
-      'data',
-      'var output=' +
-      JSON.stringify(text)
-        .replace(/<%=(.+?)%>/g, '"+($1)+"')
-        .replace(/<%(.+?)%>/g, '";$1\noutput+="') +
-      ';return output;'
-    );
-  }
+	render: function (url) {
+		CMS.settings.mainContainer.html('').fadeOut(CMS.settings.fadeSpeed);
+		CMS.settings.footerContainer.hide();
 
-  /**
-   * Markdown renderer.
-   * @function
-   * @returns {string} Rendered markdown content as HTML.
-   */
-  function Markdown() {
-    this.rules =  [
-      {regex: /(#+)(.*)/g, replacement: header},                                       // headers - fix link anchor tag regex
-      {regex: /!\[([^[]+)\]\(([^)]+)\)/g, replacement: '<img src=\'$2\' alt=\'$1\'>'}, // image
-      {regex: /\[([^[]+)\]\(([^)]+)\)/g, replacement: '<a href=\'$2\'>$1</a>'},        // hyperlink
-      {regex: /(\*\*|__)(.*?)\1/g, replacement: '<strong>$2</strong>'},                // bold
-      {regex: /(\*|_)(.*?)\1/g, replacement: '<em>$2</em>'},                           // emphasis
-      {regex: /~~(.*?)~~/g, replacement: '<del>$1</del>'},                             // del
-      {regex: /:"(.*?)":/g, replacement: '<q>$1</q>'},                                 // quote
-      {regex: /```[a-z]*\n[\s\S]*?\n```/g, replacement: blockCode},                    // block code
-      {regex: /&&&[a-z]*\n[\s\S]*?\n&&&/g, replacement: jsCode},                       // js code - fix
-      {regex: /`(.*?)`/g, replacement: '<code>$1</code>'},                             // inline code
-      {regex: /\n\*(.*)/g, replacement: ulList},                                       // ul lists
-      {regex: /\n[0-9]+\.(.*)/g, replacement: olList},                                 // ol lists
-      {regex: /\n(&gt;|>)(.*)/g, replacement: blockquote},                             // blockquotes
-      {regex: /\n-{5,}/g, replacement: '\n<hr />'},                                    // horizontal rule
-      {regex: /\n([^\n]+)\n/g, replacement: para},                                     // add paragraphs
-      {regex: /<\/ul>\s?<ul>/g, replacement: ''},                                      // fix extra ul
-      {regex: /<\/ol>\s?<ol>/g, replacement: ''},                                      // fix extra ol
-      {regex: /<\/blockquote><blockquote>/g, replacement: '\n'}                        // fix extra blockquote
-    ];
-    this.render = function (text) {
-      text = '\n' + text + '\n';
-      this.rules.forEach(function (rule) {
-        text = text.replace(rule.regex, rule.replacement);
-      });
-      return text.trim();
-    };
-    function para (text, line) {
-      var trimmed = line.trim();
-      if (/^<\/?(ul|ol|li|h|p|bl)/i.test(trimmed)) {
-        return '\n' + line + '\n';
-      }
-      return '\n<p>' + trimmed + '</p>\n';
-    }
-    function ulList (text, item) {
-      return '\n<ul>\n\t<li>' + item.trim() + '</li>\n</ul>';
-    }
-    function olList (text, item) {
-      return '\n<ol>\n\t<li>' + item.trim() + '</li>\n</ol>';
-    }
-    function blockquote (text, tmp, item) {
-      return '\n<blockquote>' + item.trim() + '</blockquote>';
-    }
-    function jsCode (text) {
-      text = text.replace(/```/gm, '');
-      return '<script type="text/javascript">' + text.trim() + '</script>';
-    }
-    function blockCode (text) {
-      text = text.replace(/```/gm, '');
-      return '<pre>' + text.trim() + '</pre>';
-    }
-    function header (text, chars, content) {
-      var level = chars.length;
-      return '<h' + level + '>' + content.trim() + '</h' + level + '>';
-    }
-  }
+		var type = url.split('/')[0];
+		var map = {
 
-  /**
-   * AJAX Get utility function.
-   * @function
-   * @async
-   * @param {string} url - URL of the request.
-   * @param {function} callback - Callback after request is complete.
-   */
-  function get(url, callback) {
-    var req = new XMLHttpRequest();
-    req.open('GET', url, true);
-    req.onreadystatechange = function() {
-      if (req.readyState === 4) {
-        if (req.status === 200) {
-          callback(req.response, false);
-        } else {
-          callback(req, req.statusText);
-        }
-      }
-    };
-    req.send();
-  }
+			// Main view
+			'' : function () {
+				CMS.renderPosts();
+			},
 
-  /**
-   * Extend utility function for extending objects.
-   * @function
-   * @param {object} target - Target object to extend.
-   * @param {object} opts - Options to extend.
-   * @param {function} callback - Callback function after completion.
-   * @returns {object} Extended target object.
-   */
-  function extend(target, opts, callback) {
-    var next;
-    if (typeof opts === 'undefined') {
-      opts = target;
-    }
-    for (next in opts) {
-      if (Object.prototype.hasOwnProperty.call(opts, next)) {
-        target[next] = opts[next];
-      }
-    }
-    if (callback) {
-      callback();
-    }
-    return target;
-  }
+			// Post view
+			'#post' : function() {
+				var id = url.split('#post/')[1].trim();
+				CMS.renderPost(id);
+			},
 
-  /**
-   * Utility function for getting a function name.
-   * @function
-   * @param {function} func - The function to get the name
-   * @returns {string} Name of function.
-   */
-  function getFunctionName(func) {
-    var ret = func.toString();
-    ret = ret.substr('function '.length);
-    ret = ret.substr(0, ret.indexOf('('));
-    return ret;
-  }
+			// Post view
+			'#page' : function() {
+				var title = url.split('#page/')[1].trim();
+				CMS.renderPage(title);
+			}
 
-  /**
-   * Checks if the file URL with file extension is a valid file to load.
-   * @function
-   * @param {string} fileUrl - File URL
-   * @returns {boolean} Is valid.
-   */
-  function isValidFile(fileUrl, extension) {
-    var ext = fileUrl.split('.').pop();
-    return (ext === extension.replace('.', '') || ext === 'html') ? true : false;
-  }
+		};
 
-  /**
-   * Get URL paths without parameters.
-   * @function
-   * @returns {string} URL Path
-   */
-  function getPathsWithoutParameters() {
-    return window.location.hash.split('/').map(function(path) {
-      if (path.indexOf('?') >= 0) {
-        path = path.substring(0, path.indexOf('?'));
-      }
-      return path;
-    }).filter(function(path) { return path !== '#'; });
-  }
+		if (map[type]) {
+			map[type]();
+		} else {
+			var errorMsg = 'Error loading page.';
+			CMS.renderError(errorMsg);
+		}
+	},
 
-  /**
-   * Get URL parameter by name.
-   * @function
-   * @param {string} name - Name of parameter.
-   * @param {string} url - URL
-   * @returns {string} Parameter value
-   */
-  function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[[]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
+	renderPage: function(title) {
+		CMS.pages.forEach(function(page){
+			if(page.title == title) {
 
-  /**
-   * Load template from URL.
-   * @function
-   * @async
-   * @param {string} url - URL of template to load.
-   * @param {object} data - Data to load into template.
-   * @param {function} callback - Callback function
-   */
-  function loadTemplate(url, data, callback) {
-    get(url, function(success, error) {
-      if (error) callback(success, error);
-      callback(Templater(success)(data), error);
-    });
-  }
+				var tpl = $('#page-template').html(),
+					$tpl = $(tpl);
 
-  /**
-   * Renders the layout into the main container.
-   * @function renderLayout
-   * @async
-   * @param {string} layout - Filename of layout.
-   * @param {object} data - Data passed to template.
-   */
-  function renderLayout(layout, data) {
-    container.innerHTML = '';
-    var url = [config.layoutDirectory, '/', layout, '.html'].join('');
-    loadTemplate(url, data, function(success, error) {
-      if (error) {
-        handleMessage(msg['LAYOUT_LOAD_ERROR']);
-      } else {
-        container.innerHTML = success;
-      }
-    });
-  }
+				$tpl.find('.page-title').html(page.title);
+				$tpl.find('.page-content').html(page.contentData);
 
-  /**
-   * Get Github URL based on configuration.
-   * @function
-   * @param {string} type - Type of file.
-   * @returns {string} GIthub URL
-   */
-  function getGithubUrl(type, gh) {
-    var url = [gh.host, 'repos', gh.username, gh.repo, 'contents',
-      type + '?ref=' + config.github.branch];
-    if (gh.prefix) url.splice(5, 0, gh.prefix);
-    return url.join('/');
-  }
+				CMS.settings.mainContainer.html($tpl).hide().fadeIn(CMS.settings.fadeSpeed);
+			}
+		});
+		CMS.renderFooter();
+	},
 
-  /**
-   * Formats date string to d/m/yyyy.
-   * @param {string} dateString - Date string to convert.
-   * @returns {string} Formatted date string
-   */
-  function formatDate(dateString) {
-    var date = new Date(dateString);
-    date.setDate(date.getDate() + 1);
-    return [date.getDate(),
-      (date.getMonth() + 1),date.getFullYear()].join('/');
-  }
+	renderPost: function(id) {
+		CMS.posts.forEach(function(post){
+			if(post.id == id) {
 
-  /**
-   * Creates message container element
-   * @function
-   * @param {string} classname - Container classname.
-   */
-  function createMessageContainer(classname) {
-    messageContainer = document.createElement('div');
-    messageContainer.className = classname;
-    messageContainer.innerHTML = 'DEBUG';
-    messageContainer.style.background = 'yellow';
-    messageContainer.style.position = 'absolute';
-    messageContainer.style.top = '0px';
-    document.body.appendChild(messageContainer);
-  }
+				var tpl = $('#post-template').html(),
+					$tpl = $(tpl);
 
-  /**
-   * Handle messages
-   * @function
-   * @param {string} message - Message.
-   * @returns {string} message
-   * @description
-   * Used for debugging purposes.
-   */
-  function handleMessage(message) {
-    if (config.debug) messageContainer.innerHTML = message;
-    return message;
-  }
+				$tpl.find('.post-title').html(post.title);
+				$tpl.find('.post-date').html((post.date.getMonth() + 1) + '/' + post.date.getDate() + '/' +  post.date.getFullYear());
+				$tpl.find('.post-content').html(post.contentData);
 
-  /**
-   * Represents a file collection.
-   * @constructor
-   * @param {string} type - The type of file collection (i.e. posts, pages).
-   * @param {object} layout - The layouts of the file collection type.
-   */
-  var FileCollection = function(type, layout) {
-    this.type = type;
-    this.layout = layout;
-    this.files = [];
-    this[type] = this.files;
-  };
+				CMS.settings.mainContainer.html($tpl).hide().fadeIn(CMS.settings.fadeSpeed);
+			}
+		});
+		CMS.renderFooter();
+	},
 
-  FileCollection.prototype = {
+	renderPosts: function() {
+		CMS.posts.forEach(function(post){
+			var tpl = $('#post-template').html(),
+				$tpl = $(tpl);
 
-    /**
-     * Initialize file collection.
-     * @method
-     * @async
-     * @param {function} callback - Callback function
-     */
-    init: function(callback) {
-      this.getFiles(function(success, error) {
-        if (error) handleMessage(msg['DIRECTORY_ERROR']);
-        this.loadFiles(function(success, error) {
-          if (error) handleMessage(msg['GET_FILE_ERROR']);
-          callback();
-        }.bind(this));
-      }.bind(this));
-    },
+			var title = '<a href="#">' + post.title + '</a>',
+				date = (post.date.getMonth() + 1) + '/' + post.date.getDate() + '/' +  post.date.getFullYear(),
+				snippet = post.contentData.split('.')[0] + '.';
 
-    /**
-     * Get file list URL.
-     * @method
-     * @param {string} type - Type of file collection.
-     * @returns {string} URL of file list
-     */
-    getFileListUrl: function(type, config) {
-      return (config.mode === 'GITHUB') ? getGithubUrl(type, config.github) : type;
-    },
+			var postLink = $tpl.find('.post-title'),
+				postDate = $tpl.find('.post-date'),
+				postSnippet = $tpl.find('.post-content');
 
-    /**
-     * Get file URL.
-     * @method
-     * @param {object} file - File object.
-     * @returns {string} File URL
-     */
-    getFileUrl: function(file, mode) {
-      return (mode === 'GITHUB') ? file['download_url'] : file.getAttribute('href');
-    },
+			postLink.on('click', function (e) {
+				e.preventDefault();
+				window.location.hash = 'post/' + post.id;
+			});
 
-    /**
-     * Get file elements.
-     * @param {object} data - File directory or Github data.
-     * @returns {array} File elements
-     */
-    getFileElements: function(data) {
-      var fileElements;
+			postLink.html(title);
+			postSnippet.html(snippet);
+			postDate.html(date);
+			CMS.settings.mainContainer.append($tpl).hide().fadeIn(CMS.settings.fadeSpeed);
+		});
+		CMS.renderFooter();
+	},
 
-      // Github Mode
-      if (config.mode === 'GITHUB') {
-        fileElements = JSON.parse(data);
-      }
-      // Server Mode
-      else {
-        // convert the directory listing to a DOM element
-        var listElement = document.createElement('div');
-        listElement.innerHTML = data;
-        // get the links in the directory listing
-        fileElements = [].slice.call(listElement.getElementsByTagName('a'));
-      }
-      return fileElements;
-    },
+	renderFooter: function() {
+		// Load footer later so things dont look weird loading ajax stuff
+		setTimeout(function () {
+			CMS.settings.footerContainer.fadeIn(CMS.settings.fadeSpeed);
+		}, 800);
+	},
 
-    /**
-     * Get files from file listing and set to file collection.
-     * @method
-     * @async
-     * @param {function} callback - Callback function
-     */
-    getFiles: function(callback) {
-      get(this.getFileListUrl(this.type, config), function(success, error) {
-        if (error) callback(success, error);
-        // find the file elements that are valid files, exclude others
-        this.getFileElements(success).forEach(function(file) {
-          var fileUrl = this.getFileUrl(file, config.mode);
-          if (isValidFile(fileUrl, config.extension)) {
-            this.files.push(new File(fileUrl, this.type, this.layout.single));
-          }
-        }.bind(this));
-        callback(success, error);
-      }.bind(this));
-    },
+	renderError: function(msg) {
+		var tpl = $('#error-template').html(),
+			$tpl = $(tpl);
 
-    /**
-     * Load files and get file content.
-     * @method
-     * @async
-     * @param {function} callback - Callback function
-     */
-    loadFiles: function(callback) {
-      var promises = [];
-      // Load file content
-      this.files.forEach(function(file, i) {
-        file.getContent(function(success, error) {
-          if (error) callback(success, error);
-          promises.push(i);
-          file.parseContent();
-          // Execute after all content is loaded
-          if (this.files.length == promises.length) {
-            callback(success, error);
-          }
-        }.bind(this));
-      }.bind(this));
-    },
+		$tpl.find('.error_text').html(msg);
 
-    /**
-     * Search file collection by attribute.
-     * @method
-     * @param {string} attribute - Attribue in file to search.
-     * @param {string} search - Search query.
-     * @returns {object} File object
-     */
-    search: function(attribute, search) {
-      this[this.type] = this.files.filter(function(file) {
-        var attr = file[attribute].toLowerCase().trim();
-        return attr.indexOf(search.toLowerCase().trim()) >= 0;
-      });
-    },
+		CMS.settings.mainContainer.html('').fadeOut(CMS.settings.fadeSpeed, function(){
+			CMS.settings.mainContainer.html($tpl).fadeIn(CMS.settings.fadeSpeed);
+		});
+	},
 
-    /**
-     * Reset file collection files.
-     * @method
-     */
-    resetSearch: function() {
-      this[this.type] = this.files;
-    },
+	contentLoaded: function(type) {
 
-    /**
-     * Get files by tag.
-     * @method
-     * @param {string} query - Search query.
-     * @returns {array} Files array
-     */
-    getByTag: function(query) {
-      this[this.type] = this.files.filter(function(file) {
-        if (query && file.tags) {
-          return file.tags.some(function(tag) {
-            return tag === query;
-          });
-        }
-      });
-    },
+		CMS.loaded[type] = true;
 
-    /**
-     * Get file by permalink.
-     * @method
-     * @param {string} permalink - Permalink to search.
-     * @returns {object} File object.
-     */
-    getFileByPermalink: function(permalink) {
-      return this.files.filter(function(file) {
-        return file.permalink === permalink;
-      })[0];
-    },
+		if(CMS.loaded.page && CMS.loaded.post) {
 
-    /**
-     * Renders file collection.
-     * @method
-     * @async
-     * @returns {string} Rendered layout
-     */
-    render: function() {
-      return renderLayout(this.layout.list, this);
-    },
-  };
+			// Set navigation
+			this.setNavigation();
+
+	        // Manually trigger on initial load
+			$(window).trigger('hashchange');
+		}
+	},
+
+	parseContent: function(content, type, file, counter, numFiles) {
+
+		var data = content.split(CMS.settings.parseSeperator),
+			contentObj = {},
+			id = counter,
+			date = file.date;
+
+		contentObj.id = id;
+		contentObj.date = date;
+
+		// Get content info
+		var infoData = data[1].split('\n');
+
+		$.each(infoData, function(k, v) {
+			if(v.length) {
+				v.replace(/^\s+|\s+$/g, '').trim();
+				var i = v.split(':');
+				var val = i[1];
+				k = i[0];
+				contentObj[k] = val.trim();
+			}
+		});
+
+		// Drop stuff we dont need
+		data.splice(0,2);
+
+		// Put everything back together if broken
+		var contentData = data.join();
+		contentObj.contentData = marked(contentData);
 
 
-  /**
-   * Represents a file.
-   * @constructor
-   * @param {string} url - The URL of the file.
-   * @param {string} type - The type of file (i.e. posts, pages).
-   * @param {object} layout - The layout templates of the file.
-   */
-  var File = function(url, type, layout) {
-    this.url = url;
-    this.type = type;
-    this.layout = layout;
-    this.html = false;
-    this.content;
-    this.name;
-    this.extension;
-    this.title;
-    this.excerpt;
-    this.date;
-    this.datetime;
-    this.author;
-    this.body;
-    this.permalink;
-    this.tags;
-  };
+		if(type == 'post') {
+			CMS.posts.push(contentObj);
+		} else if (type == 'page') {
+			CMS.pages.push(contentObj);
+		}
 
-  File.prototype = {
+		// Execute after all content is loaded
+		if(counter === numFiles) {
+			CMS.contentLoaded(type);
+		}
+	},
 
-    /**
-    * Get file content.
-    * @method
-    * @async
-    * @param {function} callback - Callback function.
-    * @description
-    * Get the file's HTML content and set the file object html
-    * attribute to the file content.
-    */
-    getContent: function(callback) {
-      get(this.url, function(success, error) {
-        if (error) callback(success, error);
-        this.content = success;
-        // check if the response returns a string instead
-        // of an response object
-        if (typeof this.content === 'string') {
-          callback(success, error);
-        }
-      }.bind(this));
-    },
+	getContent: function(type, file, counter, numFiles) {
 
-    /**
-     * Parse front matter.
-     * @method
-     * @description
-     * Overrides post attributes if front matter is available.
-     */
-    parseFrontMatter: function() {
-      var yaml = this.content.split(config.frontMatterSeperator)[1];
-      if (yaml) {
-        var attributes = {};
-        yaml.split(/\n/g).forEach(function(attributeStr) {
-          var attribute = attributeStr.split(':');
-          attribute[1] && (attributes[attribute[0].trim()] = attribute[1].trim());
+		var urlFolder = '';
+
+		switch(type) {
+			case 'post':
+				urlFolder = CMS.settings.postsFolder;
+				break;
+			case 'page':
+				urlFolder = CMS.settings.pagesFolder;
+				break;
+		}
+
+		if(CMS.settings.mode == 'Github') {
+			url = file.link;
+		} else {
+			url = urlFolder + '/' + file.name;
+		}
+
+		$.ajax({
+			type: 'GET',
+			url: url,
+			dataType: 'html',
+			success: function(content) {
+				CMS.parseContent(content, type, file, counter, numFiles);
+			},
+			error: function() {
+				var errorMsg = 'Error loading ' + type + ' content';
+				CMS.renderError(errorMsg);
+			}
+		});
+	},
+
+	getFiles: function(type) {
+
+		var folder = '',
+			url = '';
+
+		switch(type) {
+			case 'post':
+				folder = CMS.settings.postsFolder;
+				break;
+			case 'page':
+				folder = CMS.settings.pagesFolder;
+				break;
+		}
+
+		if(CMS.settings.mode == 'Github') {
+			var gus = CMS.settings.githubUserSettings,
+				gs = CMS.settings.githubSettings;
+			url = gs.host + '/repos/' + gus.username + '/' + gus.repo + '/contents/' + folder + '?ref=' + gs.branch;
+		} else {
+			url = folder;
+		}
+
+		$.ajax({
+			url: url,
+			success: function(data) {
+
+				var files = [],
+					linkFiles;
+
+				if(CMS.settings.mode == 'Github') {
+					linkFiles = data;
+				} else {
+					linkFiles = $(data).find("a");
+				}
+
+				$(linkFiles).each(function(k, f) {
+
+					var filename,
+						downloadLink;
+
+					if(CMS.settings.mode == 'Github') {
+						filename = f.name;
+						downloadLink = f.download_url;
+					} else {
+						filename = $(f).attr("href");
+					}
+
+					if(filename.endsWith('.md')) {
+						var file = {};
+						file.date = new Date(filename.substring(0, 10));
+						file.name = filename;
+						if(downloadLink) {
+							file.link = downloadLink;
+						}
+						files.push(file);
+					}
+
+				});
+
+				var counter = 0,
+					numFiles = files.length;
+
+				if(files.length > 0) {
+					$(files).each(function(k, file) {
+						counter++;
+						CMS.getContent(type, file, counter, numFiles);
+					});
+				} else {
+					var errorMsg = 'Error loading ' + type + 's in directory. Make sure ' +
+						'there are Markdown ' + type + 's in the ' + type + 's folder.';
+					CMS.renderError(errorMsg);
+				}
+			},
+			error: function() {
+				var errorMsg;
+				if(CMS.settings.mode == 'Github') {
+					errorMsg = 'Error loading ' + type + 's directory. Make sure ' +
+						'your Github settings are correctly set in your config.js file.';
+				} else {
+					errorMsg = 'Error loading ' + type + 's directory. Make sure ' +
+						type + 's directory is set correctly in config and .htaccess is in ' +
+						type + 's directory with Apache "Options Indexes" set on.';
+				}
+				CMS.renderError(errorMsg);
+			}
+		});
+	},
+
+	setNavigation: function() {
+
+		var nav = '<ul>';
+		CMS.settings.siteNavItems.forEach(function(navItem) {
+			if(navItem.hasOwnProperty('href')) {
+				nav += '<li><a href="' +  navItem.href + '"';
+				if(navItem.hasOwnProperty('newWindow')) {
+					if(navItem.newWindow) {
+						nav += 'target="_blank"';
+					}
+				}
+				nav += '>' + navItem.name + '</a></li>';
+			} else {
+				CMS.pages.forEach(function(page) {
+					if(navItem.name == page.title) {
+						nav += '<li><a href="#" class="cms_nav_link" id="' + navItem.name + '">' + navItem.name + '</a></li>';
+					}
+				});
+			}
+		});
+		nav += '</ul>';
+
+		$('.cms_nav').html(nav).hide().fadeIn(CMS.settings.fadeSpeed);
+
+		// Set onclicks for nav links
+		$.each($('.cms_nav_link'), function(k, link) {
+			var title =  $(this).attr("id");
+			$(this).on('click', function (e) {
+				e.preventDefault();
+				window.location.hash = 'page/' + title;
+			});
+
+		});
+	},
+
+	setSiteAttributes: function() {
+		CMS.settings.siteAttributes.forEach(function(attribute) {
+
+			var value;
+
+			// Set brand
+			if(attribute.attr == '.cms_sitename') {
+				if (attribute.value.match(/\.(jpeg|jpg|gif|png)$/)) {
+		            value = '<img src="' + attribute.value + '" />';
+		        } else {
+		            value = attribute.value;
+		        }
+			} else {
+				value = attribute.value;
+			}
+			$(attribute.attr).html(value).hide().fadeIn(CMS.settings.fadeSpeed);
+		});
+	},
+
+	generateSite: function() {
+
+		this.setSiteAttributes();
+
+		var types = ['post', 'page'];
+
+		types.forEach(function(type){
+			CMS.getFiles(type);
+		});
+
+		// Check for hash changes
+        $(window).on('hashchange', function () {
+            CMS.render(window.location.hash);
         });
-        extend(this, attributes, null);
-      }
-    },
+	},
 
-    /**
-     * Set list attributes.
-     * @method
-     * @description
-     * Sets front matter attributes that are specified as list attributes to
-     * an array by splitting the string by commas.
-     */
-    setListAttributes: function() {
-      config.listAttributes.forEach(function(attribute) {
-        if (this.hasOwnProperty(attribute) && this[attribute]) {
-          this[attribute] = this[attribute].split(',').map(function(item) {
-            return item.trim();
-          });
-        }
-      }.bind(this));
-    },
+	init: function (options) {
+		if ($.isPlainObject(options)) {
+			return this.extend(this.settings, options, function () {
+				CMS.generateSite();
+			});
+		}
+	}
 
-    /**
-     * Sets filename.
-     * @method
-     */
-    setFilename: function() {
-      this.name = this.url.substr(this.url.lastIndexOf('/'))
-        .replace('/', '')
-        .replace(config.extension, '');
-    },
-
-    /**
-     * Sets permalink.
-     * @method
-     */
-    setPermalink: function() {
-      this.permalink = ['#', this.type, this.name].join('/');
-    },
-
-    /**
-     * Set file date.
-     * @method
-     * @description
-     * Check if filename has date otherwise use the date
-     * in the front matter.
-     */
-    setDate: function() {
-      var dateRegEx = new RegExp(config.dateParser);
-      if (this.date) {
-        this.datetime = new Date(this.date);
-        this.date = formatDate(this.date);
-      } else if (dateRegEx.test(this.url)) {
-        this.date = dateRegEx.exec(this.url);
-        this.datetime = new Date(this.date);
-        this.date = formatDate(this.date);
-      }
-    },
-
-    /**
-     * Set file body.
-     * @method
-     * @description
-     * Sets the body of the file based on content after the front matter.
-     */
-    setBody: function() {
-      var html = this.content
-        .split(config.frontMatterSeperator)
-        .splice(2)
-        .join(config.frontMatterSeperator);
-      if (this.html) {
-        this.body = html;
-      } else {
-        if (config.markdownEngine) {
-          this.body = config.markdownEngine(html);
-        } else {
-          var md = new Markdown();
-          this.body = md.render(html);
-        }
-      }
-    },
-
-    /**
-     * Parse file content.
-     * @method
-     * @description
-     * Sets all file attributes and content.
-     */
-    parseContent: function() {
-      this.setFilename();
-      this.setPermalink();
-      this.parseFrontMatter();
-      this.setListAttributes();
-      this.setDate();
-      this.setBody();
-    },
-
-    /**
-     * Renders file.
-     * @method
-     * @async
-     */
-    render: function() {
-      return renderLayout(this.layout, this);
-    },
-  };
-
-
-  /**
-   * Sort method for file collections.
-   * @method
-   * @param {string} type - Type of file collection.
-   * @param {function} sort - Sorting function.
-   */
-  this.sort = function(type, sort) {
-    if (this.ready) {
-      this.collections[type][type].sort(sort);
-      this.collections[type].render();
-    } else {
-      handleMessage(msg['NOT_READY_WARNING']);
-    }
-  };
-
-  /**
-   * Search method for file collections.
-   * @method
-   * @param {string} type - Type of file collection.
-   * @param {string} attribute - File attribute to search.
-   * @param {string} search - Search query.
-   */
-  this.search = function(type, attribute, search) {
-    if (this.ready) {
-      this.collections[type].search(attribute, search);
-      this.collections[type].render();
-    } else {
-      handleMessage(msg['NOT_READY_WARNING']);
-    }
-  };
-
-  /**
-   * Router
-   * @method
-   * @description
-   * Sets up router for file collections to render collections
-   * and files based on URL hash.
-   */
-  this.route = function() {
-    var paths = getPathsWithoutParameters();
-    var type = paths[0];
-    var filename = paths[1];
-    var collection = this.collections[type];
-
-    var query = getParameterByName('query') || '';
-    var tag = getParameterByName('tag') || '';
-
-    this.routes[type] = function() {
-      // Default view
-      if (!type) {
-        window.location = ['#', config.defaultView].join('/');
-      }
-      // List and single views
-      else {
-        if (filename) {
-          // Single view
-          var permalink = ['#', type, filename.trim()].join('/');
-          collection.getFileByPermalink(permalink).render();
-        } else if (collection) {
-          // List view
-          if (query) {
-            // Check for queries
-            collection.search('title', query);
-          } else if (tag) {
-            // Check for tags
-            collection.getByTag(tag);
-          } else {
-            // Reset search
-            collection.resetSearch();
-          }
-          collection.render();
-        } else {
-          // Error view
-          renderLayout(config.errorLayout, {});
-        }
-      }
-      // onroute event
-      config.onroute();
-    };
-    return this.routes[type]();
-  };
-
-
-  /**
-   * Register plugins.
-   * @method
-   * @description
-   * Set up plugins based on user configuration.
-   */
-  this.registerPlugins = function() {
-    config.plugins.forEach(function(plugin) {
-      var name = getFunctionName(plugin);
-      if (!this[name]) {
-        this[name] = plugin;
-      }
-    }.bind(this));
-  };
-
-  /**
-   * Initialize file collections
-   * @method
-   * @async
-   */
-  this.initFileCollections = function(callback) {
-    var promises = [];
-    var types = [];
-
-    // setup collections and routes
-    config.types.forEach(function(type) {
-      this.collections[type.name] = new FileCollection(type.name, type.layout);
-      types.push(type.name);
-    }.bind(this));
-
-    // init collections
-    types.forEach(function(type, i) {
-      this.collections[type].init(function() {
-        promises.push(i);
-        // reverse order to display newest posts first for post types
-        if (type.indexOf('post') === 0) {
-          this.collections[type][type].reverse();
-        }
-        // Execute after all content is loaded
-        if (types.length == promises.length) {
-          callback();
-        }
-      }.bind(this));
-    }.bind(this));
-  };
-
-  /**
-   * Init
-   * @method
-   * @description
-   * Initializes the application based on the configuration. Sets up up config object,
-   * hash change event listener for router, and loads the content.
-   */
-  this.init = function() {
-    // set config
-    config = Object.assign({}, defaults, config);
-
-    // create message container element if debug mode is enabled
-    if (config.debug) {
-      createMessageContainer(config.messageClassName);
-    }
-
-    // check for hash changes
-    window.addEventListener('hashchange', this.route.bind(this));
-
-    if (config.elementId) {
-      // setup container
-      container = document.getElementById(config.elementId);
-
-      if (container) {
-        // setup file collections
-        this.initFileCollections(function() {
-          // start router by manually triggering hash change
-          window.dispatchEvent(new HashChangeEvent('hashchange'));
-          // register plugins and run onload events
-          this.ready = true;
-          this.registerPlugins();
-          config.onload();
-        }.bind(this));
-      } else {
-        handleMessage(msg['ELEMENT_ID_ERROR']);
-      }
-    } else {
-      handleMessage(msg['ELEMENT_ID_ERROR']);
-    }
-  };
-
-  // Initialize
-  this.init();
 };
