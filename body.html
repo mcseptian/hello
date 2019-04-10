@@ -17,13 +17,12 @@
             </div>
           </section>
           <br/>
-            <div class="field"><label class="label is-large" for="1">Nama :</label><input class="input is-large is-rounded is-danger" type="text" name="name" onchange="clearIt(this)"
+            <div class="field"><label class="label is-large" for="1">Nama :</label><input class="input is-large is-rounded is-danger" type="text" name="name" onchange="clearIt(this)" onblur="this.value.toUpperCase()"
                     placeholder="Nama Lengkap" id="1" />
             </div>
-            <div class="field"><label class="label is-large" for="2">Tanggal Lahir:</label><input class="input is-large is-rounded" type="text" name="birth" onchange="clearIt(this)"
-                    placeholder="Rabu, 3 Oktober 2018" id="2" />
+            <div class="field"><label class="label is-large" for="2">Tanggal Lahir:</label><input class="input is-large is-rounded" type="date" name="birth" onchange="clearIt(this)" id="2" />
             </div>
-            <div class="field"><label class="label is-large" for="3">Alamat:</label><input class="input is-large is-rounded is-danger" type="text" name="address" onchange="clearIt(this)"
+            <div class="field"><label class="label is-large" for="3">Alamat:</label><input class="input is-large is-rounded is-danger" type="text" name="address" onchange="clearIt(this)" onblur="this.value.toUpperCase()"
                     placeholder="Alamat Lengkap" id="3" />
             </div>
             <div class="field"><label class="label is-large" for="4">Kontak:</label>
@@ -52,7 +51,7 @@
                 </select>
             </div>
             <div class="field"><label class="label is-large" for="6">Program Studi:</label>
-                <input class="input is-large is-rounded is-danger" type="text" name="study" onchange="clearIt(this)" placeholder="cth: Ilmu Sejarah/Pendidikan Matematika" id="6" />
+                <input class="input is-large is-rounded is-danger" type="text" name="study" onchange="clearIt(this)" onblur="this.value.toUpperCase()" placeholder="cth: Ilmu Sejarah/Pendidikan Matematika" id="6" />
             </div>
             <div class="field"><label class="label is-large" for="7">Fakultas :</label>
                 <select class="input is-large is-rounded" name="faculty" id="7">
