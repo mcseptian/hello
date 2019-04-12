@@ -11,7 +11,7 @@
                   Data Pribadi
                 </h1>
                 <h2 class="subtitle">
-                  Isikan Identitas sesuai KTP
+                  Isikan Identitasmu
                 </h2>
               </div>
             </div>
@@ -91,7 +91,7 @@
                   Data Lain
                 </h1>
                 <h2 class="subtitle">
-                  Pilih posisi yang akan kamu lamar. Upload Curriculum vitae dalam bentuk pdf. Lalu kirim.
+                  Pilih posisi yang akan kamu lamar. Upload Scan KTP dan Curriculum vitae dalam bentuk pdf. Lalu kirim.
                 </h2>
               </div>
             </div>
@@ -108,11 +108,17 @@
            <br/>
             <div class="file has-name is-light is-large">
               <label class="file-cta">
-                <input class="file-label" type="file" name="myFile1" onchange="clearIt(this)" placeholder="Choose a file…">
+                <input class="file-label" type="file" name="myFile1" onchange="clearIt(this)" placeholder="Upload file CV…">
               </label>
              </div>
             <br/>
-            <input type="button" class="button is-dark is-fullwidth is-large" value="Kirim" onmouseup="submitForm(this.parentNode)"/>
+            <div class="file has-name is-light is-large">
+              <label class="file-cta">
+                <input class="file-label" type="file" name="myFile2" onchange="clearIt(this)" placeholder="Upload file KTP…">
+              </label>
+             </div>
+            <br/>
+            <input type="button" class="button is-dark is-large is-rounded is-fullwidth" value="Kirim" onmouseup="submitForm(this.parentNode)"/>
         </form>
         <footer class="footer">
           <div class="content has-text-centered">
