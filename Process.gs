@@ -1,10 +1,10 @@
 function processForm(theForm) {
     var allTheData, doc, fileBlob, folder, folders, name, sheet, targetRange, template;
-    var name, birth, address, phone, programme, faculty, year, gpa, salesman, myFile1;
+    var name, birth, address, phone, programme, faculty, year, gpa, salesman, myFile1, position;
     var fileUrl;
     var arrayOfNamesToWriteToSS, i, L, outerArray, innerArray, thisKey, TS;
     
-    arrayOfNamesToWriteToSS = ['name', 'birth', 'address', 'phone', 'programme', 'study', 'faculty', 'year', 'gpa', 'myFile1'];
+    arrayOfNamesToWriteToSS = ['name', 'birth', 'address', 'phone', 'programme', 'study', 'faculty', 'year', 'gpa', 'myFile1', 'position'];
     L = arrayOfNamesToWriteToSS.length;
 
     fileBlob = theForm.myFile1;
