@@ -12,7 +12,7 @@ Pertama, buka [Google Apps Script](https://script.google.com/home/all) untuk men
 
 ## Salin
 
-1. Fork Repository ini dengan klik tombol Fork atau klik [link ini](https://github.com/login?return_to=%2Fmcseptian%2Fhello%2tree%2pob).
+1. Fork Repository ini dengan klik tombol Fork atau klik [link ini](https://github.com/login?return_to=%2Fmcseptian%2Fhello%2Ftree%2Fpob).
 2. Install ekstensi (https://chrome.google.com/webstore/detail/google-apps-script-github/lfjcgcmkmjjlieihflfhjopckgpelofo) di Browser [Chrome](https://www.google.com/intl/en/chrome/browser/desktop/index.html?standalone=1) kamu lalu login dengan akun [github](https://github.com/login) melalui ekstensi.
 3. Buat Project baru dengan membuka [Google Apps Script](https://script.google.com/home/all) lalu pilih repository dan pilih branch yang telah kamu fork.
 
