@@ -97,11 +97,19 @@
             </div>
           </section>
           <br/>
-          <div class="file has-name is-light is-fullwidth is-large">
+          <div class="file has-name is-light is-half is-large">
             <label class="file-cta">
               <input class="file-label" type="file" name="myFile1" onchange="clearIt(this)" placeholder="Choose a file…">
             </label>
            </div>
+           <div class="field is-half">
+                <label class="label is-large" for="10">Posisi:</label>
+                <select class="input is-large is-rounded" name="position" id="10">    
+                    <option>Marketing</option>            
+                    <option>Operator</option>
+                    <option>Teknisi</option>
+                </select>
+            </div>
             <br/>
             <input type="button" class="button is-dark is-fullwidth is-large" value="Kirim" onmouseup="submitForm(this.parentNode)"/>
         </form>
